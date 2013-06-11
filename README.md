@@ -21,4 +21,4 @@ Planned enhancements are:
 *  support for passing a list of tickers / securities for easy analysis
 
 
-An IPython Notebook showing what lime can do will be uploaded shortly
+A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/lime_demo.ipynb).
