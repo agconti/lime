@@ -8,7 +8,7 @@ Currently lime supports two main work horse functions:
 *  `get_single(date, stock_ticker,)` - retrives a single days trading history returned in a nice neat pandas dataframe. 
 *  `get _many(date_range, stock_ticker)` - retrives tick data over a range of dates, and compiles those dates in a nice neat dataframe for easy output.
 
-*additional functions are included to make this process easier*
+*Additional functions are included to make this process easier.*
 
 ### Improvements
 
@@ -22,3 +22,6 @@ Planned enhancements are:
 
 
 A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/lime_demo.ipynb).
+
+###Name Etymology
+After getting a lot of ticks (tick bites), you get lime.  
