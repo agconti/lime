@@ -10,6 +10,13 @@ Currently lime supports two main work horse functions:
 
 *Additional functions are included to make this process easier.*
 
+###Examples:
+
+![GOOG](https://raw.github.com/agconti/lime/master/GOOG.png)
+![APPLE](https://raw.github.com/agconti/lime/master/Apple.png)
+
+*A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/lime_demo.ipynb).*
+
 ### Improvements
 
 Currently, lime can get the tick data for any US trade stock, but this is limiting. 
@@ -20,8 +27,6 @@ Planned enhancements are:
 *  support for international securities
 *  support for passing a list of tickers / securities for easy analysis
 
-
-A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/lime_demo.ipynb).
 
 ###Name Etymology
 After getting a lot of ticks (tick bites), you get lime.  
