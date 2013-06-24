@@ -12,6 +12,12 @@ Currently lime supports two main work horse functions:
 
 ###Examples:
 
+#### Getting a single day's trading history:
+
+![AAPL_Sing](https://raw.github.com/agconti/lime/master/AAPL_Single.png)
+
+#### Getting  the last three weeks:
+
 ![GOOG](https://raw.github.com/agconti/lime/master/GOOG.png)
 ![APPLE](https://raw.github.com/agconti/lime/master/Apple.png)
 
