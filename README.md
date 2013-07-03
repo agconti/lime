@@ -3,8 +3,6 @@ lime
 
 An API for extracting tick data for US equities for ad-hoc analysis in Python with Pandas.
 
-All submissions are welcome. To submit a change, fork this repo, commit your changes, and send me a [pull request](http://help.github.com/send-pull-requests/).
-
 Currently lime supports two main work horse functions:
 
 *  `get_single(date, stock_ticker,)` - retrives a single days trading history returned in a nice neat pandas dataframe. 
@@ -38,3 +36,7 @@ Planned enhancements are:
 
 ###Name Etymology
 After getting a lot of ticks (tick bites), you get lime.  
+
+All submissions are welcome. To submit a change, fork this repo, commit your changes, and send me a [pull request](http://help.github.com/send-pull-requests/).
+
+
