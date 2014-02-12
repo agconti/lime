@@ -6,7 +6,7 @@ An API for extracting tick data for US equities for ad-hoc analysis in Python wi
 Currently lime supports two main work horse functions:
 
 *  `get_single(date, stock_ticker,)` - retrives a single days trading history returned in a nice neat pandas dataframe. 
-*  `get _many(date_range, stock_ticker)` - retrives tick data over a range of dates, and compiles those dates in a nice neat dataframe for easy output.
+*  `get_many(date_range, stock_ticker)` - retrives tick data over a range of dates, and compiles those dates in a nice neat dataframe for easy output.
 
 *Additional functions are included to make this process easier.*
 
