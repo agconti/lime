@@ -37,21 +37,9 @@ class Lime:
             if split_results[1] == ('O' or 'N' or 'A'):
                 processed = True
                 self.exchange_found = True
-        except:
-            pass
-        
-        if not processed and self.exchange.lower() == 'nasdaq':
-            self.ticker = str(self.ticker) + '.O'
-            self.exchange_found = True
-            return self.ticker
-
-        if not processed and self.exchange.lower() == 'nyse':
-            self.ticker = str(self.ticker) + '.N'
-            self.exchange_found = True
-            return self.ticker
-
-        if not processed and self.exchange.lower() == 'amex':
-            self.ticker = str(self.ticker) + '.A'
+        except IndexError:
+            self.ticker = "{}{}".format(self.ticker,
+                                        self.exchanges[self.exchange.title()])
             self.exchange_found = True
             return self.ticker
 
