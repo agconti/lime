@@ -1,4 +1,4 @@
-lime
+Lime
 ====
 
 An API for extracting tick data for US equities for ad-hoc analysis in Python with Pandas.
@@ -14,14 +14,14 @@ Currently lime supports two main work horse functions:
 
 #### Getting a single day's trading history:
 
-![AAPL_Sing](https://raw.github.com/agconti/lime/master/AAPL_Single.png)
+![AAPL_Sing](assets/imgs/AAPL_Single.png)
 
 #### Getting  the last three weeks:
 
-![GOOG](https://raw.github.com/agconti/lime/master/GOOG.png)
-![APPLE](https://raw.github.com/agconti/lime/master/Apple.png)
+![GOOG](assets/imgs/GOOG.png)
+![APPLE](assets/imgs/Apple.png)
 
-*A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/lime_demo.ipynb).*
+*A basic demo of what lime can do will is located [here](http://nbviewer.ipython.org/urls/raw.github.com/agconti/lime/master/assets/demo/lime_demo.ipynb).*
 
 ### Improvements
 
