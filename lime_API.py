@@ -1,32 +1,37 @@
-class lime(object):
+import re
+import datetime
+from datetime import timedelta
+from urllib2 import urlopen
+from pandas import DataFrame, concat, date_range, read_csv
+
+
+class Lime:
     '''
     A simple API for extracting stock tick data
     '''
-    def __init__(self, *args, **kwargs):
-        from pandas import DataFrame
+    def __init__(self, file_format='csv', *args, **kwargs):
         df = DataFrame.from_items([('A', [1, 2, 3])])
-        self.start_date = ''
-        self.end_date = ''
-        self.file_format = 'csv'
-        self.exchange = ''
+        self.start_date = start_date.strftime('%Y%m%d')
+        self.end_date = end_date
+        self.file_format = file_format
+        self.exchange = exchange
         self.exchange_found = False
-        self.exchanges = {'Nasdaq': '.O', 'Nyse' : '.N', 'Amex': '.A'}
+        self.exchanges = {
+            'Nasdaq': '.O',
+            'Nyse': '.N',
+            'Amex': '.A'
+        }
 
         # default to today's date if date is empty
-        if self.start_date == '':
-            self.start_date = self.get_date_today()
-        # set string formatting requirements
-        else:
-            self.start_date =  self.start_date.strftime('%Y%m%d')
+        if not self.start_date:
+            self.start_date = self.get_date_today().strftime('%Y%m%d')
 
-        
     def exchange_tracker(self, *args):
         '''
         modifies ticker with correct exchange extension
         '''
-        import re
         processed = False
-        
+  
         try:
             split_results = re.split('[.]', self.ticker)
             if split_results[1] == ('O' or 'N' or 'A'):
@@ -35,29 +40,28 @@ class lime(object):
         except:
             pass
         
-        if processed == False and self.exchange.lower() == 'nasdaq':
-            self.ticker = str(self.ticker)+'.O'
-            self.exchange_found = True
-            return self.ticker
-        if processed == False and self.exchange.lower() == 'nyse':
-            self.ticker = str(self.ticker)+'.N'
-            self.exchange_found = True
-            return self.ticker
-        if processed == False and self.exchange.lower() == 'amex':
-            self.ticker = str(self.ticker)+'.A'
+        if not processed and self.exchange.lower() == 'nasdaq':
+            self.ticker = str(self.ticker) + '.O'
             self.exchange_found = True
             return self.ticker
 
-    def efficient_ticker_retrieval (self, *args):
+        if not processed and self.exchange.lower() == 'nyse':
+            self.ticker = str(self.ticker) + '.N'
+            self.exchange_found = True
+            return self.ticker
+
+        if not processed and self.exchange.lower() == 'amex':
+            self.ticker = str(self.ticker) + '.A'
+            self.exchange_found = True
+            return self.ticker
+
+    def efficient_ticker_retrieval(self, *args):
         '''
         1 query way to get ticker data
 
         self, start_date, ticker, file_format
-        '''
-        from pandas import read_csv
-        from urllib2 import urlopen
-
-        s = 'http://www.netfonds.no/quotes/tradedump.php?date=%s&paper=%s&csv_format=%s'%(self.start_date, self.ticker, self.file_format)
+        '''        
+        s = 'http://www.netfonds.no/quotes/tradedump.php?date=%s&paper=%s&csv_format=%s' % (self.start_date, self.ticker, self.file_format)
         #print s # for debugging
 
         # generally will error if wrong ticker is given by slow_ticker_retrieveal
@@ -68,7 +72,6 @@ class lime(object):
             df = urlopen(s).read()
         return df
         
-    
     def slow_ticker_retrieval(self, *args):
         '''
         finds ticker info w/o exchange info
@@ -78,11 +81,11 @@ class lime(object):
         origninal_ticker = self.ticker
         self.exchange_found = False
 
-        for i,key in enumerate(self.exchanges):
+        for i, key in enumerate(self.exchanges):
                 self.ticker = origninal_ticker
                 self.ticker = str(self.ticker) + str(self.exchanges[key])
                 df = self.efficient_ticker_retrieval()
-                if isinstance(df, str) != True and (len(df.columns) > 1) :
+                if not isinstance(df, str) and (len(df.columns) > 1):
                     self.exchange_found = True
                     self.exchange = key
                     return df
@@ -92,7 +95,6 @@ class lime(object):
         '''
         gets today's date
         '''
-        import datetime
         return datetime.date.today().strftime('%Y%m%d')
 
     def lime_date_parse(self, date):
@@ -107,19 +109,17 @@ class lime(object):
 
          get stock prices
         '''
-        import datetime
         self.ticker = ticker
         
-        
-        if self.exchange_found == True:
+        if self.exchange_found:
             df = self.efficient_ticker_retrieval()
-        elif self.exchange_found == False and self.exchange == '':
-            df = self.slow_ticker_retrieval()   
-        elif self.exchange_found == False and self.exchange != '':
-            self.ticker  = self.exchange_tracker()
+        elif not self.exchange_found and self.exchange == '':
+            df = self.slow_ticker_retrieval()  
+        elif not self.exchange_found and self.exchange is not '':
+            self.ticker = self.exchange_tracker()
             df = self.efficient_ticker_retrieval()
         
-        if isinstance(df, str) != True :
+        if not isinstance(df, str):
             df.time = df.time.apply(lambda x: datetime.datetime.strptime(x, '%Y%m%dT%H%M%S'))
             df = df.set_index(df.time)
             return df
@@ -130,7 +130,7 @@ class lime(object):
         '''
         self, begining_date, end_date (optional), ticker
 
-        start date is the day you want to start exctracting info from 
+        start date is the day you want to start exctracting info from
 
         ie extract info :
 
@@ -141,11 +141,6 @@ class lime(object):
 
         If no end_date is specified then it defaults today
         '''
-        from datetime import timedelta
-
-        from pandas import concat
-        from pandas import date_range
-
         self.ticker = ticker
         self.end_date = end_date
         self.exchange_found = False
@@ -169,7 +164,7 @@ class lime(object):
         # Get stock tick data
         for single_date in date_range(start=begining_date, end=self.end_date, freq='B'):
             self.start_date = self.lime_date_parse(single_date)
-            if isinstance(df, str) != True:
+            if not isinstance(df, str):
                 concat([df, self.get_single(self.ticker)])
             else:
                 df = self.get_single(self.ticker)
