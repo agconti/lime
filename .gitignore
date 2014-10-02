@@ -53,5 +53,8 @@ docs/_build/
 # PyBuilder
 target/
 
+#IPython 
+.ipynb_checkpoints/
+
 # OS Specfic files
 .DS_Store
