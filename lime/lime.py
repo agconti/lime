@@ -1,4 +1,3 @@
-import re
 import datetime
 from datetime import timedelta
 from urllib2 import urlopen
@@ -9,9 +8,8 @@ class Lime:
     '''
     A simple API for extracting stock tick data
     '''
-    def __init__(self, file_format='csv', *args, **kwargs):
+    def __init__(self, file_format='csv', start_date, *args, **kwargs):
         df = DataFrame.from_items([('A', [1, 2, 3])])
-        self.start_date = start_date.strftime('%Y%m%d')
         self.end_date = end_date
         self.file_format = file_format
         self.exchange = exchange
@@ -21,22 +19,25 @@ class Lime:
             'Nyse': '.N',
             'Amex': '.A'
         }
-
-        # default to today's date if date is empty
-        if not self.start_date:
-            self.start_date = self.get_date_today().strftime('%Y%m%d')
-
+        self.initialize_start_date()
+        
+    def initialize_start_date(self, start_date):
+        '''
+        Initializes start date to todays date if not provided.
+        '''
+        if not start_date:
+            self.start_date = datetime.date.today()
+            
+        self.start_date = start_date.strftime('%Y%m%d')
     def exchange_tracker(self, *args):
         '''
         modifies ticker with correct exchange extension
         '''
-        processed = False
-  
         try:
-            split_results = re.split('[.]', self.ticker)
+            split_results = self.ticker.split('.')
             if split_results[1] == ('O' or 'N' or 'A'):
-                processed = True
                 self.exchange_found = True
+
         except IndexError:
             self.ticker = "{}{}".format(self.ticker,
                                         self.exchanges[self.exchange.title()])
@@ -79,11 +80,6 @@ class Lime:
                     return df
                     break
 
-    def get_date_today(self):
-        '''
-        gets today's date
-        '''
-        return datetime.date.today().strftime('%Y%m%d')
 
     def lime_date_parse(self, date):
         '''
