@@ -1,9 +1,9 @@
 import datetime
 from datetime import timedelta
-from _urllib2 import _urlopen
 from pandas import DataFrame, concat, date_range, read_csv
 
-from .exceptions import LimeInvaildQuery, LimeInvaildDate
+from .exceptions import LimeInvaildQuery, LimeInvaildDate, LimeInvaildTicker
+
 
 class Lime:
     '''
@@ -15,7 +15,6 @@ class Lime:
         self._exchange = exchange
         self._file_format = file_format
         self._df = None
-        self._exchange_found = False
         self._exchanges = {
             'Nasdaq': '.O',
             'Nyse': '.N',
@@ -41,81 +40,84 @@ class Lime:
         '''
         return date.strftime('%Y%m%d')
 
-    def exchange_tracker(self, *args):
+    def check_date(self, start, end):
+        ''' Checks wether supplied dates are accpable. '''
+        if timedelta(0) > (end - start) > timedelta(21):
+            raise LimeInvaildDate(start, end)
+        return True
+
+    def check_ticker_exchange_extenstion(self):
+        ''' Checks if ticker has a valid exchange extension. '''
+        extension = self.ticker.split('.')[1]
+        if extension == ('O' or 'N' or 'A'):
+            return True
+        return False
+
+    def check_ticker_exchange_extenstion(self):
         '''
         modifies ticker with correct exchange extension
         '''
         try:
-            split_results = self.ticker.split('.')
-            if split_results[1] == ('O' or 'N' or 'A'):
-                self._exchange_found = True
-
+            self.check_ticker_exchange_extenstion()
         except IndexError:
+            ## TODO: Needs to be refactored
             self.ticker = "{}{}".format(self.ticker,
                                         self._exchanges[self._exchange.title()])
             self._exchange_found = True
             return self.ticker
 
-    def efficient_ticker_retrieval(self):
+    def get_exchange_from_ticker(self):
         '''
-        1 query way to get ticker data
+        Loops through the three exchanges Netfonds supports, Nasdaq; NYSE; Amex,
+        and returns the correct exchange extension if it exists.
+        '''
+        for key in self._exchanges.keys():
+            self.ticker = "{}{}".format(self.ticker, self._exchanges[key])
+            self._df = self.get_tick_data()
+            if self._df is not None and (len(self._df.columns) > 1):
+                return self._exchange = key
 
-        self, start_date, ticker, file_format
-        '''        
+        raise LimeInvaildTicker()
+
+    def get_tick_data(self):
+        '''
+        Retrives tick data from Netfonds from a known ticker.
+        '''
         uri = '{}?date={}&paper={}&csv_format={}'.format(self._url,
                                                          self.start_date,
                                                          self.ticker,
                                                          self._file_format)
-        print uri
-        try:
-            return read_csv(uri)
-        except:
-            return _urlopen(uri).read()
-        
-    def slow_ticker_retrieval(self):
+        return read_csv(uri)  
+
+    
+    def get_trades(self, ticker):
         '''
-
-        this should really be a uitlity function to find the exchange for a given ticker symbol
-
-
-        finds ticker info w/o exchange info
-        '''
-        self._exchange_found = False
-
-        for key in self._exchanges.keys():
-            self.ticker = "{}{}".format(self.ticker, self._exchanges[key])
-            self._df = self.efficient_ticker_retrieval()
-            if self._df is not None and (len(self._df.columns) > 1):
-                self._exchange_found = True
-                self._exchange = key
-                break
-
-    def get_single(self, ticker):
-        '''
-        ticker, *args, **kwargs
-
-        get stock prices
+        Gets the trades made for a ticker on a specified day.
         '''
         self.ticker = ticker
         
         if self._exchange_found:
-            self._df = self.efficient_ticker_retrieval()
+            self._df = self.get_tick_data()
         
+        # finds the correct ticker if its not found
         if not self._exchange_found:
             if self._exchange == '':
-                self._df = self.slow_ticker_retrieval() 
+                self._df = self.get_exchange_from_ticker()
             else:
-                self.ticker = self._exchange_tracker()
-                self._df = self.efficient_ticker_retrieval()
+                self.ticker = self.exchange_tracker()
+                self._df = self.get_tick_data()
         
+        # cleans data after its retrived
         if self._df is not None:
             self._df.time = self._df.time.apply(lambda x: datetime.datetime.strptime(x, '%Y%m%dT%H%M%S'))
-            self._df = self._df.set_index(self._df.time)  
+            self._df = self._df.set_index(self._df.time)
         else:
             raise LimeInvaildQuery()
 
-    def get_many(self, begining_date, ticker, end_date):
+    def get_trade_history(self, begining_date, ticker, end_date):
         '''
+        Gets the trades made for a ticker from a range of days.
+
         self, begining_date, end_date (optional), ticker
 
         start date is the day you want to start exctracting info from
@@ -132,10 +134,7 @@ class Lime:
         self.ticker = ticker
         self.end_date = end_date
         self._exchange_found = False
-
-        # generate warnings -- should be put into thier own methods
-        if timedelta(0) > (end_date - begining_date) > timedelta(21):
-            raise LimeInvaildDate(begining_date, end_date)
+        self.check_date(start_date, end_date)
 
         # prep dates
         begining_date = self.date_parse(begining_date)
@@ -149,7 +148,6 @@ class Lime:
         for day in date_range(start=begining_date, end=self.end_date, freq='B'):
             self.start_date = self.date_parse(day)
             if self._df is not None:
-                concat([self._df, self.get_single(self.ticker)])
+                concat([self._df, self.get_trades(self.ticker)])
             else:
-                self._df = self.get_single(self.ticker)
-        
+                self._df = self.get_trades(self.ticker)

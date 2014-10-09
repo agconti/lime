@@ -1,9 +1,22 @@
 from datetime import timedelta
 
 
+class LimeInvaildTicker(Exception):
+    '''
+    An Exception for handling invalid tickers
+    '''
+
+    def __init__(self):
+        self.msg = ('Lime was not able to find that ticker symbol on Netfonds.'
+                    'Please check your ticker and try again.')
+
+    def __str__(self):
+        return repr(self.msg)
+
+
 class LimeInvaildQuery(Exception):
     '''
-    An Exception for Handling invalid requests
+    An Exception for handling invalid requests
 
     ###Parameters
     * url -- string, should be self._url used to access NetFonds
