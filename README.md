@@ -34,9 +34,6 @@ Planned enhancements are:
 *  support for passing a list of tickers / securities for easy analysis
 
 
-###Name Etymology
-After getting a lot of ticks (tick bites), you get lime.  
-
-All submissions are welcome. To submit a change, fork this repo, commit your changes, and send me a [pull request](http://help.github.com/send-pull-requests/).
+Want to contribute? To submit a change, fork this repo, commit your changes, and send me a [pull request](http://help.github.com/send-pull-requests/).
 
 
