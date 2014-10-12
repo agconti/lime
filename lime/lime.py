@@ -134,9 +134,9 @@ class Lime:
         * start -- datetime
         * end -- ( optional ) datetime, defaults to today's date
         '''
-        self.check_date(start, end)
         self.start_date = self.date_parse(start)
         self.end_date = self.date_parse(end) if end else self.get_date_today()
+        self.check_date(start, end)
     
     def process_data(self):
         '''
@@ -160,13 +160,16 @@ class Lime:
 
         self.set_df(read_csv(self.uri))
 
-    def get_trades(self, ticker):
+    def get_trades(self, ticker, exchange=None):
         '''
         Gets the trades made for a ticker on a specified day.
 
         ###Parameters
         * ticker -- string, stock ticker symbol
         '''
+        if exchange:
+            self.exchange = exchange
+            
         self.ticker = ticker
         self.check_ticker_exchange_extenstion()
         self._get_tick_data()
