@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 
-class LimeInvaildTicker(Exception):
+class LimeInvalidTicker(Exception):
     '''
     An Exception for handling invalid tickers
     '''
@@ -14,7 +14,7 @@ class LimeInvaildTicker(Exception):
         return repr(self.msg)
 
 
-class LimeInvaildQuery(Exception):
+class LimeInvalidQuery(Exception):
     '''
     An Exception for handling invalid requests
 
@@ -32,9 +32,9 @@ class LimeInvaildQuery(Exception):
         return repr("Invalid Query:{}:\n{}".format(self.msg, self.url))
 
 
-class LimeInvaildDate(Exception):
+class LimeInvalidDate(Exception):
     '''
-    An Exception for handling invalid dates for requests
+    An Exception for handling invalid dates for requests Invalid
 
     ###Parameters
     * start -- datetime object, should be self.start_date
