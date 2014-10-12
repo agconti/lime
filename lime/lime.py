@@ -7,13 +7,21 @@ from .exceptions import LimeInvaildQuery, LimeInvaildDate, LimeInvaildTicker
 
 class Lime:
     '''
-    A simple API for extracting stock tick data
+    A simple API for extracting stock tick data.
+
+    ###Parameters
+    * start_date -- datetime, date beginning the retrieval window
+    * end_date -- datetime, date ending the retrieval window
+    * exchange -- string ( optional ), ticker's exchange: ['Nasdaq', 'Nyse', 'Amex']
+    * ticker -- string ( optional ), stock ticker symbol. With or with out 
+        Netfonds exchange extension.
     '''
-    def __init__(self, start_date, end_date, exchange, file_format='csv'):
+    def __init__(self, start_date, end_date, exchange=None, ticker=None):
         self.start_date = self.date_parse(start_date)
         self.end_date = self.date_parse(end_date)
+        self.ticker = None
         self._exchange = exchange
-        self._file_format = file_format
+        self._file_format = 'csv'
         self._df = None
         self._exchanges = {
             'Nasdaq': '.O',
